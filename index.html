@@ -81,12 +81,52 @@
   .why-card p { color: var(--muted); font-size: 0.83rem; line-height: 1.6; }
 
   /* PETS ilustrações */
-  .pets-section { background: var(--black); }
-  .pets-grid { display: grid; grid-template-columns: repeat(3, 1fr); }
-  .pet-card { position: relative; overflow: hidden; aspect-ratio: 3/4; display: flex; align-items: flex-end; }
+  .pets-section { background: var(--black); overflow: hidden; }
+  .pets-carousel-wrap { position: relative; }
+  .pets-grid {
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    cursor: grab;
+  }
+  .pets-grid::-webkit-scrollbar { display: none; }
+  .pets-grid.dragging { cursor: grabbing; }
+  .pet-card {
+    position: relative;
+    overflow: hidden;
+    flex: 0 0 38vw;
+    height: 56vw;
+    max-height: 520px;
+    min-width: 280px;
+    scroll-snap-align: start;
+    display: flex; align-items: flex-end;
+  }
   .pet-card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; transition: transform 0.5s; }
   .pet-card:hover img { transform: scale(1.05); }
   .pet-card-bg { display: none; }
+  /* dots indicadores */
+  .carousel-dots { display: flex; justify-content: center; gap: 8px; padding: 18px 0 24px; }
+  .carousel-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.25); transition: all 0.25s; cursor: pointer; border: none; padding: 0; }
+  .carousel-dot.active { background: var(--orange); width: 24px; border-radius: 4px; }
+  /* setas */
+  .carousel-btn {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    z-index: 10; width: 44px; height: 44px; border-radius: 50%;
+    background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2);
+    color: white; font-size: 1.1rem; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s; backdrop-filter: blur(6px);
+  }
+  .carousel-btn:hover { background: var(--orange); border-color: var(--orange); }
+  .carousel-btn.prev { left: 16px; }
+  .carousel-btn.next { right: 16px; }
+  @media(max-width:960px){
+    .pet-card { flex: 0 0 80vw; height: 100vw; max-height: 420px; }
+    .carousel-btn { display: none; }
+  }
   .pet-card-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(51,52,52,0.92) 0%, rgba(51,52,52,0.1) 60%, transparent 100%); }
   .pet-card-content { position: relative; z-index: 2; padding: 24px; width: 100%; }
   .pet-card-content span { background: var(--orange); color: white; padding: 5px 14px; border-radius: 100px; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; display: inline-block; margin-bottom: 8px; }
@@ -186,10 +226,9 @@
   @media(max-width:960px){
     .hero{grid-template-columns:1fr;}.hero-right{height:320px;padding-top:0;}
     .hero-left{padding:40px 24px 40px;}
-    nav{padding:14px 20px;}
+    nav{padding:14px 16px;}
+    .nav-cta{padding:9px 14px; font-size:0.78rem; white-space:nowrap;}
     .why-grid,.cards-grid,.services-grid,.steps-grid{grid-template-columns:1fr;}
-    .steps-grid::before{display:none;}
-    .pets-grid{grid-template-columns:1fr 1fr;}
     .contact-grid{grid-template-columns:1fr;}
     section{padding:60px 24px;}
     .cta-strip{padding:60px 24px;}
@@ -269,35 +308,114 @@
   </div>
 </section>
 
-<!-- FOTOS PETS -->
+<!-- CARROSSEL DE FOTOS -->
 <div class="pets-section">
-  <div class="pets-grid">
-    <div class="pet-card">
-      <img src="https://images.unsplash.com/photo-1516734212186-a967f81ad0d7?w=600&q=85&fit=crop&crop=center" alt="Cachorro no banho">
-      <div class="pet-card-overlay"></div>
-      <div class="pet-card-content">
-        <span>Banho Premium</span>
-        <p>Cuidado e carinho em cada detalhe</p>
+  <div class="pets-carousel-wrap">
+    <button class="carousel-btn prev" onclick="slideCarousel(-1)">&#8592;</button>
+    <div class="pets-grid" id="petsCarousel">
+      <div class="pet-card">
+        <img src="https://images.unsplash.com/photo-1516734212186-a967f81ad0d7?w=700&q=85&fit=crop&crop=center" alt="Cachorro no banho">
+        <div class="pet-card-overlay"></div>
+        <div class="pet-card-content">
+          <span>Banho Premium</span>
+          <p>Cuidado e carinho em cada detalhe</p>
+        </div>
+      </div>
+      <div class="pet-card">
+        <img src="https://images.unsplash.com/photo-1552053831-71594a27632d?w=700&q=85&fit=crop&crop=face" alt="Cachorro feliz">
+        <div class="pet-card-overlay"></div>
+        <div class="pet-card-content">
+          <span>Passaportes Petland</span>
+          <p>O ano todo de cuidado garantido</p>
+        </div>
+      </div>
+      <div class="pet-card">
+        <img src="https://images.unsplash.com/photo-1601979031925-424e53b6caaa?w=700&q=85&fit=crop&crop=face" alt="Tutor com cachorro">
+        <div class="pet-card-overlay"></div>
+        <div class="pet-card-content">
+          <span>Tutores Felizes</span>
+          <p>Porque quem ama cuida bem</p>
+        </div>
+      </div>
+      <div class="pet-card">
+        <img src="https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=700&q=85&fit=crop&crop=center" alt="Cachorros brincando">
+        <div class="pet-card-overlay"></div>
+        <div class="pet-card-content">
+          <span>Experiência Exclusiva</span>
+          <p>Momentos especiais a cada visita</p>
+        </div>
+      </div>
+      <div class="pet-card">
+        <img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=700&q=85&fit=crop&crop=center" alt="Cachorro golden retriever">
+        <div class="pet-card-overlay"></div>
+        <div class="pet-card-content">
+          <span>Pets Felizes</span>
+          <p>Saem renovados a cada visita</p>
+        </div>
       </div>
     </div>
-    <div class="pet-card">
-      <img src="https://images.unsplash.com/photo-1552053831-71594a27632d?w=600&q=85&fit=crop&crop=face" alt="Cachorro feliz">
-      <div class="pet-card-overlay"></div>
-      <div class="pet-card-content">
-        <span>Passaportes Petland</span>
-        <p>O ano todo de cuidado garantido</p>
-      </div>
-    </div>
-    <div class="pet-card">
-      <img src="https://images.unsplash.com/photo-1601979031925-424e53b6caaa?w=600&q=85&fit=crop&crop=face" alt="Tutor com cachorro">
-      <div class="pet-card-overlay"></div>
-      <div class="pet-card-content">
-        <span>Tutores Felizes</span>
-        <p>Porque quem ama cuida bem</p>
-      </div>
-    </div>
+    <button class="carousel-btn next" onclick="slideCarousel(1)">&#8594;</button>
+    <div class="carousel-dots" id="carouselDots"></div>
   </div>
 </div>
+
+<script>
+  const carousel = document.getElementById('petsCarousel');
+  const dotsContainer = document.getElementById('carouselDots');
+  const cards = carousel.querySelectorAll('.pet-card');
+  let currentIndex = 0;
+
+  // Criar dots
+  cards.forEach((_, i) => {
+    const dot = document.createElement('button');
+    dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+    dot.onclick = () => goTo(i);
+    dotsContainer.appendChild(dot);
+  });
+
+  function updateDots() {
+    dotsContainer.querySelectorAll('.carousel-dot').forEach((d, i) => {
+      d.classList.toggle('active', i === currentIndex);
+    });
+  }
+
+  function goTo(index) {
+    currentIndex = Math.max(0, Math.min(index, cards.length - 1));
+    carousel.scrollTo({ left: cards[currentIndex].offsetLeft, behavior: 'smooth' });
+    updateDots();
+  }
+
+  function slideCarousel(dir) {
+    goTo(currentIndex + dir);
+  }
+
+  // Atualizar dot ao scrollar manualmente
+  carousel.addEventListener('scroll', () => {
+    const scrollLeft = carousel.scrollLeft;
+    let closest = 0;
+    cards.forEach((card, i) => {
+      if (Math.abs(card.offsetLeft - scrollLeft) < Math.abs(cards[closest].offsetLeft - scrollLeft)) {
+        closest = i;
+      }
+    });
+    if (closest !== currentIndex) {
+      currentIndex = closest;
+      updateDots();
+    }
+  });
+
+  // Drag para desktop
+  let isDown = false, startX, scrollLeftStart;
+  carousel.addEventListener('mousedown', e => { isDown = true; carousel.classList.add('dragging'); startX = e.pageX - carousel.offsetLeft; scrollLeftStart = carousel.scrollLeft; });
+  carousel.addEventListener('mouseleave', () => { isDown = false; carousel.classList.remove('dragging'); });
+  carousel.addEventListener('mouseup', () => { isDown = false; carousel.classList.remove('dragging'); });
+  carousel.addEventListener('mousemove', e => {
+    if (!isDown) return;
+    e.preventDefault();
+    const x = e.pageX - carousel.offsetLeft;
+    carousel.scrollLeft = scrollLeftStart - (x - startX) * 1.5;
+  });
+</script>
 
 <!-- COMO FUNCIONA -->
 <section class="como" id="como">
