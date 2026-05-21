@@ -3,6 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<script>
+  // Force reload if cached version is outdated
+  const VERSION = '20250521-v3';
+  if (localStorage.getItem('page_version') !== VERSION) {
+    localStorage.setItem('page_version', VERSION);
+    if (performance.navigation.type !== 1) {
+      window.location.reload(true);
+    }
+  }
+</script>
 <title>Passaporte Petland | Cuidado Premium para seu Pet</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
